@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {View, Image, ImageBackground, StyleSheet, Text, TextInput} from 'react-native';
+import {View, Image, ImageBackground, StyleSheet, Text, TextInput, Alert} from 'react-native';
 
 import {Feather as Icon} from '@expo/vector-icons';
 
@@ -11,16 +11,28 @@ import {useNavigation} from '@react-navigation/native';
 
 
 
-export default function Home(){
+export default function Login(){
 
   let [uf, setUf] = useState();
   let [city, setCity] = useState();
 
   const navigation = useNavigation();
 
-  function handleNavigationToPoints(){
-    navigation.navigate('Points');
+  //Função que navega para tela de cadastro
+  function handleNavigationToRegister(){
+    navigation.navigate('Register');
   }
+
+   //Função que efetua o login
+   function goLogin(){
+   
+     Alert.alert("Login efetuado com sucesso!");
+     navigation.navigate('Points')
+    
+  }
+
+
+
 
 
     return(
@@ -29,16 +41,19 @@ export default function Home(){
         imageStyle={{width:274, height:368}}
         >
             <View style={styles.main}>
-                 <Image style={{width:182, height:44}} source={require('../../assets/logo.png')}/>
+                 <Image style={{width:188, height:44}} source={require('../../assets/logo.png')}/>
                  <Text style={styles.title}>Seu marketplace de coleta de residuos</Text>
                  <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente</Text>
+               
+                 <Text style={styles.description}>Efetue o login para acessar o Aplicativo!</Text>
+       
             </View>
 
             <View style={styles.footer}>
 
             <TextInput
               style={styles.input}
-              placeholder="Digite a UF"
+              placeholder="E-mail"
               maxLength={2}
               autoCapitalize="characters"
               autoCorrect={false}
@@ -47,17 +62,27 @@ export default function Home(){
 
           <TextInput
             style={styles.input}
-            placeholder="Digite a cidade"            
+            placeholder="Senha"            
             autoCorrect={false}
+            secureTextEntry={true}
             
           />
 
-                <RectButton style={styles.button} onPress={handleNavigationToPoints}>
+                <RectButton style={styles.button} onPress={goLogin}>
                     <View style={styles.buttonIcon}>       
-                       <Icon name="arrow-right" color="#FFF" size={24}/>               
+                       <Icon name="user-check" color="#FFF" size={24}/>               
                     </View>
                     <Text style={styles.buttonText}>Entrar</Text>
                 </RectButton>
+
+                <RectButton style={styles.button} onPress={handleNavigationToRegister}>
+                    <View style={styles.buttonIcon}>       
+                       <Icon name="user-plus" color="#FFF" size={24}/>               
+                    </View>
+                    <Text style={styles.buttonText}>Criar conta</Text>
+                </RectButton>
+
+                
             </View>        
       </ImageBackground>
     );

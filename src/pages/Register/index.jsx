@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
-import {View, Image, ImageBackground, StyleSheet, Text, TextInput} from 'react-native';
+import {View, Image, ImageBackground, StyleSheet, Text, TextInput, Alert} from 'react-native';
 
 import {Feather as Icon} from '@expo/vector-icons';
 
@@ -8,19 +8,73 @@ import {RectButton} from 'react-native-gesture-handler';
 
 import {useNavigation} from '@react-navigation/native';
 
-
+//Importando o AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Home(){
 
-  let [uf, setUf] = useState();
-  let [city, setCity] = useState();
+  const dataKey = '@ecoleta:users';
+
+  let [nomeUsuario, setNome] = useState();
+  let [emailUsuario, setEmail] = useState();
+  let [senhaUsuario, setSenha] = useState();
+
 
   const navigation = useNavigation();
 
+
+  //Função que navega para a tela de Login
+  function handleNavigationToLogin(){
+    navigation.navigate('Login');
+  }
+
+
+  //Função que navega para a tela de Login
   function handleNavigationToPoints(){
     navigation.navigate('Points');
   }
+
+  //Função que faz o cadastro
+  async function handleRegister(){
+
+    let dados ={
+      name:  nomeUsuario,
+      email: emailUsuario,
+      senha: senhaUsuario
+    }
+
+    try{
+    
+     
+        await AsyncStorage.setItem(dataKey, JSON.stringify(dados));
+
+        Alert.alert("Usuário cadastrado com sucesso!");
+
+    } catch(error){
+      console.log(error);
+
+      Alert.alert("Preencha todos os dados");
+
+    }
+
+
+  }
+
+
+  useEffect(()=>{
+
+    async function loadData(){
+      const data = await AsyncStorage.getItem(dataKey);
+      
+      console.log(JSON.parse(data));
+    
+    }
+
+    loadData();
+
+
+  },[])
 
 
     return(
@@ -29,36 +83,45 @@ export default function Home(){
         imageStyle={{width:274, height:368}}
         >
             <View style={styles.main}>
-                 <Image style={{width:182, height:44}} source={require('../../assets/logo.png')}/>
-                 <Text style={styles.title}>Seu marketplace de coleta de residuos</Text>
-                 <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente</Text>
+                 <Image style={{width:188, height:44}} source={require('../../assets/logo.png')}/>
+                 <Text style={styles.title}>Criar uma conta gratuita</Text>
+                 <Text style={styles.description}>Crie uma conta agora mesmo para utilizar nosso aplicativo!</Text>
+             
             </View>
 
             <View style={styles.footer}>
 
             <TextInput
+              onChangeText={setNome}
               style={styles.input}
-              placeholder="Digite a UF"
-              maxLength={2}
-              autoCapitalize="characters"
+              placeholder="Nome completo"            
               autoCorrect={false}
             
           />
 
           <TextInput
+            onChangeText={setEmail}
             style={styles.input}
-            placeholder="Digite a cidade"            
-            autoCorrect={false}
-            
+            placeholder="Seu melhor e-mail"            
+            autoCorrect={false}            
           />
 
-                <RectButton style={styles.button} onPress={handleNavigationToPoints}>
+        <TextInput
+          onChangeText={setSenha}
+            style={styles.input}
+            placeholder="Senha"            
+            autoCorrect={false} 
+            secureTextEntry={true}           
+          />
+
+                <RectButton style={styles.button} onPress={handleRegister}>
                     <View style={styles.buttonIcon}>       
                        <Icon name="arrow-right" color="#FFF" size={24}/>               
                     </View>
-                    <Text style={styles.buttonText}>Entrar</Text>
+                    <Text style={styles.buttonText}>Criar uma conta</Text>
                 </RectButton>
-            </View>        
+            </View>
+
       </ImageBackground>
     );
 }
