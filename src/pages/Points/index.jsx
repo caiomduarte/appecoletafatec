@@ -10,7 +10,8 @@ import MapView, { Marker } from 'react-native-maps';
  
 export default function Points(){
 
-  const navigation = useNavigation();
+const navigation = useNavigation();
+
 //Função para abrir a tela de Detail
 function handleNavigationToDetail(){
   navigation.navigate('Detail');

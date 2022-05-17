@@ -11,14 +11,39 @@ import {useNavigation} from '@react-navigation/native';
 //Importando o AsyncStorage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+//Importando o arquivo API
+import api from '../../services/api';
+
 
 export default function Home(){
 
-  const dataKey = '@ecoleta:users';
+  //const dataKey = '@ecoleta:users';
 
+  //Criando as variaveis para receber o dados da tela
   let [nomeUsuario, setNome] = useState();
   let [emailUsuario, setEmail] = useState();
   let [senhaUsuario, setSenha] = useState();
+
+  //Criando a função para cadastrar um usuario no banco de dados
+  async function CadastrarUsuario(){       
+    
+    console.log("clicou");
+                        
+    let response = await api.post('cadastro-usuarios.php', {
+                    nome: nomeUsuario,
+                    email: emailUsuario,
+                    senha: senhaUsuario
+                })
+                .then(function (response) {
+                    Alert.alert("Usuário Cadastrado com sucesso!");               
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    Alert.alert("Erro ao cadastrar, tente mais tarde!");     
+                    console.log(error);
+                });
+     }
+
 
 
   const navigation = useNavigation();
@@ -44,12 +69,10 @@ export default function Home(){
       senha: senhaUsuario
     }
 
-    try{
-    
+    try{    
      
         await AsyncStorage.setItem(dataKey, JSON.stringify(dados));
-
-        Alert.alert("Usuário cadastrado com sucesso!");
+        Alert.alert("Usuário cadastrado com sucesso!");      
 
     } catch(error){
       console.log(error);
@@ -64,15 +87,14 @@ export default function Home(){
 
   useEffect(()=>{
 
-    async function loadData(){
-      const data = await AsyncStorage.getItem(dataKey);
+    // async function loadData(){
+    //   const data = await AsyncStorage.getItem(dataKey);
       
-      console.log(JSON.parse(data));
+    //   console.log(JSON.parse(data));
     
-    }
+    // }
 
-    loadData();
-
+    //loadData();
 
   },[])
 
@@ -114,7 +136,7 @@ export default function Home(){
             secureTextEntry={true}           
           />
 
-                <RectButton style={styles.button} onPress={handleRegister}>
+                <RectButton style={styles.button} onPress={CadastrarUsuario}>
                     <View style={styles.buttonIcon}>       
                        <Icon name="arrow-right" color="#FFF" size={24}/>               
                     </View>
